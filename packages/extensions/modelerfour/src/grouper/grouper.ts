@@ -15,7 +15,7 @@ import {
   Request,
   SchemaContext,
 } from "@autorest/codemodel";
-import { Session } from "@azure-tools/autorest-extension-base";
+import { Session } from "@autorest/extension-base";
 import { values, items, length, Dictionary, refCount, clone } from "@azure-tools/linq";
 import { pascalCase, camelCase } from "@azure-tools/codegen";
 import { ModelerFourOptions } from "../modeler/modelerfour-options";
@@ -52,7 +52,7 @@ export class Grouper {
     }
     /*
         if (this.options[mergeReponseHeaders] === true) {
-    
+
           for (const group of this.codeModel.operationGroups) {
             for (const operation of group.operations) {
               this.processResponseHeaders(operation);
@@ -76,16 +76,12 @@ export class Grouper {
   }
 
   processParameterGroup(group: OperationGroup, operation: Operation, request: Request) {
-    const grouped = [
-      ...values(operation.parameters)
-        .concat(values(request.parameters))
-        .where(
-          (parameter) =>
-            parameter.extensions?.[xmsParameterGrouping] &&
-            parameter.schema.type !== SchemaType.Constant &&
-            parameter.implementation !== ImplementationLocation.Client,
-        ),
-    ];
+    const grouped = [...(operation.parameters ?? []), ...(request.parameters ?? [])].filter(
+      (parameter) =>
+        parameter.extensions?.[xmsParameterGrouping] &&
+        !(parameter.schema.type === SchemaType.Constant && parameter.required) &&
+        parameter.implementation !== ImplementationLocation.Client,
+    );
 
     if (grouped.length > 0) {
       // create a parameter group object schema for the selected parameters.

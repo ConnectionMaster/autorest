@@ -7,8 +7,11 @@
   "bin": {
     "md-mock-api": "./dist/cli/cli.js"
   },
+  "engines": {
+    "node": ">=10.13.0"
+  },
   "scripts": {
-    "fix": "eslint  . --fix --ext .ts",
+    "lint:fix": "eslint  . --fix --ext .ts",
     "lint": "eslint  ./src --ext .ts --max-warnings=0",
     "test": "jest --watchAll --coverage=false",
     "test:ci": "jest --ci",
@@ -33,12 +36,14 @@
     "@typescript-eslint/eslint-plugin": "^4.12.0",
     "@typescript-eslint/parser": "^4.12.0",
     "eslint": "^7.17.0",
+    "eslint-plugin-jest": "~24.3.2",
+    "eslint-plugin-node": "~11.1.0",
     "eslint-plugin-import": "~2.22.1",
     "eslint-plugin-prettier": "~3.2.0",
-    "eslint-plugin-unicorn": "~25.0.1",
+    "eslint-plugin-unicorn": "~27.0.0",
     "prettier": "~2.2.1",
     "supertest": "^6.0.1",
-    "typescript": "~3.9.7"
+    "typescript": "~4.2.3"
   },
   "dependencies": {
     "body-parser": "^1.19.0",

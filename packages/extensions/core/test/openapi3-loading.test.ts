@@ -1,9 +1,9 @@
-import * as assert from "assert";
-import { AutoRest } from "../lib/autorest-core";
+import assert from "assert";
+import { AutoRest } from "../src/lib/autorest-core";
 import { RealFileSystem } from "@azure-tools/datastore";
-import { LoadLiterateOpenAPIs } from "../lib/pipeline/plugins/loaders";
+import { LoadLiterateOpenAPIs } from "../src/lib/plugins/loaders";
 import { CreateFolderUri, ResolveUri } from "@azure-tools/uri";
-import { AppRoot } from "../lib/constants";
+import { AppRoot } from "../src/lib/constants";
 
 describe("OpenAPI3Loading", () => {
   it("No input files provided", async () => {
@@ -11,7 +11,7 @@ describe("OpenAPI3Loading", () => {
     const config = await autoRest.view;
     const dataStore = config.DataStore;
 
-    const inputFilesUris = [];
+    const inputFilesUris: string[] = [];
 
     const OpenAPIFilesLoaded = await LoadLiterateOpenAPIs(
       config,
@@ -73,9 +73,7 @@ describe("OpenAPI3Loading", () => {
       ResolveUri(CreateFolderUri(AppRoot), "test/resources/openapi3-loading/non-oa3-file2.yaml"),
     ];
 
-    const openAPIFileUris = [
-      ResolveUri(CreateFolderUri(AppRoot), "test/resources/openapi3-loading/oa3-file2.yaml"),
-    ];
+    const openAPIFileUris = [ResolveUri(CreateFolderUri(AppRoot), "test/resources/openapi3-loading/oa3-file2.yaml")];
 
     const inputFilesUris = [...openAPIFileUris, ...nonOpenAPIFileUris];
 

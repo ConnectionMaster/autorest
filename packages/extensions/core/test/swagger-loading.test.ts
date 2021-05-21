@@ -1,10 +1,10 @@
-import * as assert from "assert";
+import assert from "assert";
 
 import { RealFileSystem } from "@azure-tools/datastore";
 import { CreateFolderUri, ResolveUri } from "@azure-tools/uri";
-import { AutoRest } from "../lib/autorest-core";
-import { LoadLiterateSwaggers } from "../lib/pipeline/plugins/loaders";
-import { AppRoot } from "../lib/constants";
+import { AutoRest } from "../src/lib/autorest-core";
+import { LoadLiterateSwaggers } from "../src/lib/plugins/loaders";
+import { AppRoot } from "../src/lib/constants";
 
 describe("SwaggerLoading", () => {
   it("No input files provided", async () => {
@@ -12,7 +12,7 @@ describe("SwaggerLoading", () => {
     const config = await autoRest.view;
     const dataStore = config.DataStore;
 
-    const inputFilesUris = [];
+    const inputFilesUris: string[] = [];
 
     const swaggerFilesLoaded = await LoadLiterateSwaggers(
       config,

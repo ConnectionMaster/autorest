@@ -1,6 +1,132 @@
 # Change Log - @autorest/modelerfour
 
-This log was last generated on Thu, 28 Jan 2021 00:22:27 GMT and should not be manually modified.
+This log was last generated on Thu, 20 May 2021 16:41:13 GMT and should not be manually modified.
+
+## 4.19.2
+Thu, 20 May 2021 16:41:13 GMT
+
+### Patches
+
+- **Immproved** error message for duplicate operations
+
+## 4.19.1
+Tue, 04 May 2021 18:18:45 GMT
+
+### Patches
+
+- **Fix** Using multiple security layers(`AND`) now produce warning instead of error.
+
+## 4.19.0
+Tue, 27 Apr 2021 17:48:43 GMT
+
+### Minor changes
+
+- **Added** Distinction between anything and anyobject
+- **Added** Support for openapi deprecation
+- **Added** Support known set of security scheme
+
+### Patches
+
+- **Perf** Major performance improvment to duplicate schema finder
+
+## 4.18.4
+Mon, 19 Apr 2021 21:06:54 GMT
+
+### Patches
+
+- **Fix** Enum defined just with allOf of other enum
+- **Typo** Ambigious -> Ambiguous 
+
+## 4.18.3
+Tue, 13 Apr 2021 21:32:54 GMT
+
+### Patches
+
+- **Fix** Enum without type resulting in null values
+
+## 4.18.2
+Fri, 09 Apr 2021 19:53:22 GMT
+
+### Patches
+
+- **Fix** api-version-mode configuration not working if not auto
+
+## 4.18.1
+Thu, 01 Apr 2021 15:46:41 GMT
+
+### Patches
+
+- Bump @azure-tools/uri version to ~3.1.1
+- **Cleanup** Migrated use of require -> es6 imports
+- **Update** how binary request body are treated if the content-type is not binary: Group all binary body together to prevent multiple method overload with same parameter
+- **Fix** Some unhandled promises
+
+## 4.18.0
+Tue, 16 Mar 2021 15:52:56 GMT
+
+### Minor changes
+
+- **Change** let single value enum parameters be able to be grouped.
+- **Feature** Support using `allOf` in enum to reference a parent enum. All the parent choices will be flattened in the child enum
+
+### Patches
+
+- **Respect** OpenAPI3 discriminator mapping
+- Bump dependencies versions
+
+## 4.17.2
+Fri, 05 Mar 2021 16:31:29 GMT
+
+### Patches
+
+- Allow server variables to provide a string format(url, uri, etc.)
+
+## 4.17.1
+Fri, 26 Feb 2021 21:50:13 GMT
+
+### Patches
+
+- **Fix** Don't add a duplicate Content-Type parameter if it is already provided in the spec
+- Fix x-ms-header-collection-prefix injected dictionary not defined in the list of schemas
+
+## 4.17.0
+Fri, 19 Feb 2021 21:42:09 GMT
+
+### Minor changes
+
+- **Change** Body parmaeters for a `formData` body will be seperate parameters in the generated model instead of being grouped in a body object.
+
+### Patches
+
+- Change property redefinition error when changing type into a warning to allow polymorphism
+
+## 4.16.2
+Thu, 11 Feb 2021 18:03:07 GMT
+
+### Patches
+
+- **Internals** Update chalk dependency to ^4.1.0
+
+## 4.16.1
+Mon, 08 Feb 2021 23:06:15 GMT
+
+### Patches
+
+- Set `isInMultipart: true` for multipart parameters
+
+## 4.16.0
+Thu, 04 Feb 2021 19:05:18 GMT
+
+### Minor changes
+
+- Migrate bundling system from static-link to webpack
+
+### Patches
+
+- Fix the use of  circular dependencies in additionalProperties [PR #3819](https://github.com/Azure/autorest/pull/3819)
+- Internal code linting fixes
+- Internal: Move out test custom matchers to seperate package
+- Rename @azure-tools/autorest-extension-base dependency to new @autorest/extension-base pkg
 
 ## 4.15.456
 Thu, 28 Jan 2021 00:22:27 GMT

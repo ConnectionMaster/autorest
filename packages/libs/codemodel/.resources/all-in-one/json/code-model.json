@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "definitions": {
     "ApiVersion": {
-      "description": "- since API version formats range from \nAzure ARM API date style (2018-01-01) to semver (1.2.3) \nand virtually any other text, this value tends to be an \nopaque string with the possibility of a modifier to indicate\nthat it is a range.\n\noptions: \n- prepend a dash or append a plus to indicate a range \n(ie, '2018-01-01+' or '-2019-01-01', or '1.0+' )\n\n- semver-range style (ie, '^1.0.0' or '~1.0.0' )",
+      "description": "- since API version formats range from\nAzure ARM API date style (2018-01-01) to semver (1.2.3)\nand virtually any other text, this value tends to be an\nopaque string with the possibility of a modifier to indicate\nthat it is a range.\n\noptions:\n- prepend a dash or append a plus to indicate a range\n(ie, '2018-01-01+' or '-2019-01-01', or '1.0+' )\n\n- semver-range style (ie, '^1.0.0' or '~1.0.0' )",
       "type": "object",
       "properties": {
         "version": {
@@ -31,27 +31,16 @@
       }
     },
     "Deprecation": {
-      "description": "represents  deprecation information for a given aspect",
+      "description": "Represent information about a deprecation",
       "type": "object",
       "properties": {
-        "message": {
-          "description": "the reason why this aspect",
+        "reason": {
+          "description": "Reason why this was deprecated.",
           "type": "string"
-        },
-        "apiVersions": {
-          "description": "the api versions that this deprecation is applicable to.",
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ApiVersion"
-          }
         }
       },
       "defaultProperties": [],
-      "additionalProperties": false,
-      "required": [
-        "apiVersions",
-        "message"
-      ]
+      "additionalProperties": false
     },
     "Extensions": {
       "description": "A dictionary of open-ended 'x-*' extensions propogated from the original source document.",
@@ -103,7 +92,8 @@
         },
         "deprecated": {
           "$ref": "#/definitions/Deprecation",
-          "description": "deprecation information -- ie, when this aspect doesn't apply and why"
+          "description": "Represent the deprecation information if api is deprecated.",
+          "default": "undefined"
         },
         "origin": {
           "description": "where did this aspect come from (jsonpath or 'modelerfour:<soemthing>')",
@@ -286,6 +276,7 @@
       "description": "possible schema types that indicate the type of schema.",
       "enum": [
         "any",
+        "any-object",
         "array",
         "binary",
         "boolean",
@@ -381,6 +372,7 @@
       "description": "all schema types",
       "enum": [
         "any",
+        "any-object",
         "array",
         "binary",
         "boolean",
@@ -949,7 +941,8 @@
         },
         "deprecated": {
           "$ref": "#/definitions/Deprecation",
-          "description": "deprecation information -- ie, when this aspect doesn't apply and why"
+          "description": "Represent the deprecation information if api is deprecated.",
+          "default": "undefined"
         },
         "origin": {
           "description": "where did this aspect come from (jsonpath or 'modelerfour:<soemthing>')",
@@ -1041,6 +1034,10 @@
         "groupedBy": {
           "$ref": "#/definitions/Parameter",
           "description": "When a parameter is grouped into another, this will tell where the parameter got grouped into."
+        },
+        "isPartialBody": {
+          "description": "If this parameter is only part of the body request(for multipart and form bodies.)",
+          "type": "boolean"
         }
       },
       "defaultProperties": [],
@@ -1672,6 +1669,22 @@
         }
       ]
     },
+    "AnyObjectSchema": {
+      "type": "object",
+      "properties": {},
+      "defaultProperties": [],
+      "additionalProperties": false,
+      "required": [
+        "language",
+        "protocol",
+        "type"
+      ],
+      "allOf": [
+        {
+          "$ref": "#/definitions/Schema"
+        }
+      ]
+    },
     "Schemas": {
       "description": "the full set of schemas for a given service, categorized into convenient collections",
       "type": "object",
@@ -1802,7 +1815,7 @@
           }
         },
         "choices": {
-          "description": "- this is essentially can be thought of as an 'enum' \nthat is a choice between one of several items, but an unspecified value is permitted.",
+          "description": "- this is essentially can be thought of as an 'enum'\nthat is a choice between one of several items, but an unspecified value is permitted.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/ChoiceSchema"
@@ -1860,7 +1873,7 @@
           }
         },
         "unknowns": {
-          "description": "it's possible that we just may make this an error \nin representation.",
+          "description": "it's possible that we just may make this an error\nin representation.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/Schema"
@@ -1876,6 +1889,12 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/AnySchema"
+          }
+        },
+        "anyObjects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AnyObjectSchema"
           }
         }
       },
@@ -2092,7 +2111,8 @@
         },
         "deprecated": {
           "$ref": "#/definitions/Deprecation",
-          "description": "deprecation information -- ie, when this aspect doesn't apply and why"
+          "description": "Represent the deprecation information if api is deprecated.",
+          "default": "undefined"
         },
         "origin": {
           "description": "where did this aspect come from (jsonpath or 'modelerfour:<soemthing>')",
@@ -2187,12 +2207,73 @@
         "authenticationRequired": {
           "description": "indicates that the API surface requires authentication",
           "type": "boolean"
+        },
+        "schemes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SecurityScheme"
+          }
         }
       },
       "defaultProperties": [],
       "additionalProperties": false,
       "required": [
-        "authenticationRequired"
+        "authenticationRequired",
+        "schemes"
+      ]
+    },
+    "SecurityScheme": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        }
+      },
+      "defaultProperties": [],
+      "additionalProperties": false,
+      "required": [
+        "type"
+      ]
+    },
+    "AADTokenSecurityScheme": {
+      "type": "object",
+      "properties": {
+        "scopes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "defaultProperties": [],
+      "additionalProperties": false,
+      "required": [
+        "scopes",
+        "type"
+      ],
+      "allOf": [
+        {
+          "$ref": "#/definitions/SecurityScheme"
+        }
+      ]
+    },
+    "AzureKeySecurityScheme": {
+      "type": "object",
+      "properties": {
+        "headerName": {
+          "type": "string"
+        }
+      },
+      "defaultProperties": [],
+      "additionalProperties": false,
+      "required": [
+        "headerName",
+        "type"
+      ],
+      "allOf": [
+        {
+          "$ref": "#/definitions/SecurityScheme"
+        }
       ]
     },
     "Example": {
@@ -2213,6 +2294,20 @@
       },
       "defaultProperties": [],
       "additionalProperties": false
+    },
+    "HttpMethod": {
+      "description": "standard HTTP protocol methods",
+      "enum": [
+        "delete",
+        "get",
+        "head",
+        "options",
+        "patch",
+        "post",
+        "put",
+        "trace"
+      ],
+      "type": "string"
     },
     "SerializationStyle": {
       "description": "The Serialization Style used for the parameter.\n\nDescribes how the parameter value will be serialized depending on the type of the parameter value.",
@@ -2245,20 +2340,6 @@
         "label",
         "matrix",
         "simple"
-      ],
-      "type": "string"
-    },
-    "HttpMethod": {
-      "description": "standard HTTP protocol methods",
-      "enum": [
-        "delete",
-        "get",
-        "head",
-        "options",
-        "patch",
-        "post",
-        "put",
-        "trace"
       ],
       "type": "string"
     },
@@ -2569,25 +2650,6 @@
         }
       ]
     },
-    "SecurityScheme": {
-      "anyOf": [
-        {
-          "$ref": "#/definitions/BearerHTTPSecurityScheme"
-        },
-        {
-          "$ref": "#/definitions/NonBearerHTTPSecurityScheme"
-        },
-        {
-          "$ref": "#/definitions/OAuth2SecurityScheme"
-        },
-        {
-          "$ref": "#/definitions/APIKeySecurityScheme"
-        },
-        {
-          "$ref": "#/definitions/OpenIdConnectSecurityScheme"
-        }
-      ]
-    },
     "APIKeySecurityScheme": {
       "type": "object",
       "properties": {
@@ -2716,7 +2778,7 @@
       "type": "object",
       "properties": {
         "path": {
-          "description": "A relative path to an individual endpoint. \n\nThe field name MUST begin with a slash. \nThe path is appended (no relative URL resolution) to the expanded URL from the Server Object's url field in order to construct the full URL. \nPath templating is allowed. \n\nWhen matching URLs, concrete (non-templated) paths would be matched before their templated counterparts.",
+          "description": "A relative path to an individual endpoint.\n\nThe field name MUST begin with a slash.\nThe path is appended (no relative URL resolution) to the expanded URL from the Server Object's url field in order to construct the full URL.\nPath templating is allowed.\n\nWhen matching URLs, concrete (non-templated) paths would be matched before their templated counterparts.",
           "type": "string"
         },
         "uri": {
@@ -2801,7 +2863,7 @@
       "type": "object",
       "properties": {
         "multipart": {
-          "description": "indicates that the HTTP Request should be a multipart request \n\nie, that it has multiple requests in a single request.",
+          "description": "indicates that the HTTP Request should be a multipart request\n\nie, that it has multiple requests in a single request.",
           "type": "boolean",
           "enum": [
             true
@@ -2926,10 +2988,10 @@
         },
         "knownMediaType": {
           "$ref": "#/definitions/KnownMediaType",
-          "description": "canonical response type (ie, 'json')"
+          "description": "canonical response type (ie, 'json')."
         },
         "mediaTypes": {
-          "description": "the possible media types that this response MUST match one of",
+          "description": "The possible media types that this response MUST match one of.",
           "type": "array",
           "items": {
             "type": "string"
@@ -2953,8 +3015,6 @@
       "defaultProperties": [],
       "additionalProperties": false,
       "required": [
-        "knownMediaType",
-        "mediaTypes",
         "statusCodes"
       ],
       "allOf": [
@@ -2978,8 +3038,6 @@
       "additionalProperties": false,
       "required": [
         "binary",
-        "knownMediaType",
-        "mediaTypes",
         "statusCodes"
       ],
       "allOf": [
@@ -3056,7 +3114,8 @@
         },
         "deprecated": {
           "$ref": "#/definitions/Deprecation",
-          "description": "deprecation information -- ie, when this aspect doesn't apply and why"
+          "description": "Represent the deprecation information if api is deprecated.",
+          "default": "undefined"
         },
         "origin": {
           "description": "where did this aspect come from (jsonpath or 'modelerfour:<soemthing>')",

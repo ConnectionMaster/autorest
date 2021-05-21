@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { serialize } from "@azure-tools/codegen";
-import { Host, startSession } from "@azure-tools/autorest-extension-base";
+import { Host, startSession } from "@autorest/extension-base";
 import { codeModelSchema, CodeModel } from "@autorest/codemodel";
 import { Example } from "./example";
 
@@ -25,6 +25,7 @@ export async function processRequest(host: Host) {
     host.WriteFile("code-model-v4-no-tags.yaml", serialize(result), undefined, "code-model-v4-no-tags");
   } catch (E) {
     if (debug) {
+      // eslint-disable-next-line no-console
       console.error(`${__filename} - FAILURE  ${JSON.stringify(E)} ${E.stack}`);
     }
     throw E;

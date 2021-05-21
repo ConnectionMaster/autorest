@@ -1,16 +1,17 @@
 {
   "typescript.tsdk": "./common/temp/node_modules/typescript/lib",
+  "search.exclude": {
+    "**/dist/**": true,
+    "Samples/**": true,
+  },
   "files.exclude": {
     "**/node_modules/**": true,
-    "**/dist/**": true,
     "**/.git": true,
     "**/.svn": true,
     "**/.hg": true,
     "**/*.log": true,
     "**/package-deps.json": true,
     "**/.DS_Store": true,
-    "core/*.js": false,
-    "autorest/*.js": false,
   },
   "editor.formatOnSave": true,
   "[javascript]": {
@@ -37,15 +38,5 @@
   "files.eol": "\n",
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
-  },
-  "eslint.workingDirectories": [
-    {
-      "changeProcessCWD": true,
-      "directory": "./autorest",
-    },
-    {
-      "changeProcessCWD": true,
-      "directory": "./core",
-    }
-  ]
+  }
 }

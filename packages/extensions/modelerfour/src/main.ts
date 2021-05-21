@@ -1,6 +1,5 @@
-require("source-map-support").install();
-
-import { AutoRestExtension } from "@azure-tools/autorest-extension-base";
+import "source-map-support/register";
+import { AutoRestExtension } from "@autorest/extension-base";
 import { processRequest as modelerfour } from "./modeler/plugin-modelerfour";
 import { processRequest as preNamer } from "./prenamer/plugin-prenamer";
 import { processRequest as flattener } from "./flattener/plugin-flattener";
@@ -23,4 +22,9 @@ async function main() {
   await pluginHost.Run();
 }
 
-main();
+main().catch((e) => {
+  // eslint-disable-next-line no-console
+  console.error("Unexpected Error while running modelerfour extension", e);
+  // eslint-disable-next-line no-process-exit
+  process.exit(1);
+});

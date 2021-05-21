@@ -35,7 +35,8 @@
         },
         "deprecated": {
           "$ref": "./master.json#/definitions/Deprecation",
-          "description": "deprecation information -- ie, when this aspect doesn't apply and why"
+          "description": "Represent the deprecation information if api is deprecated.",
+          "default": "undefined"
         },
         "origin": {
           "description": "where did this aspect come from (jsonpath or 'modelerfour:<soemthing>')",
@@ -809,6 +810,22 @@
         }
       ]
     },
+    "AnyObjectSchema": {
+      "type": "object",
+      "properties": {},
+      "defaultProperties": [],
+      "additionalProperties": false,
+      "required": [
+        "language",
+        "protocol",
+        "type"
+      ],
+      "allOf": [
+        {
+          "$ref": "./schemas.json#/definitions/Schema"
+        }
+      ]
+    },
     "Schemas": {
       "description": "the full set of schemas for a given service, categorized into convenient collections",
       "type": "object",
@@ -939,7 +956,7 @@
           }
         },
         "choices": {
-          "description": "- this is essentially can be thought of as an 'enum' \nthat is a choice between one of several items, but an unspecified value is permitted.",
+          "description": "- this is essentially can be thought of as an 'enum'\nthat is a choice between one of several items, but an unspecified value is permitted.",
           "type": "array",
           "items": {
             "$ref": "./schemas.json#/definitions/ChoiceSchema"
@@ -997,7 +1014,7 @@
           }
         },
         "unknowns": {
-          "description": "it's possible that we just may make this an error \nin representation.",
+          "description": "it's possible that we just may make this an error\nin representation.",
           "type": "array",
           "items": {
             "$ref": "./schemas.json#/definitions/Schema"
@@ -1013,6 +1030,12 @@
           "type": "array",
           "items": {
             "$ref": "./schemas.json#/definitions/AnySchema"
+          }
+        },
+        "anyObjects": {
+          "type": "array",
+          "items": {
+            "$ref": "./schemas.json#/definitions/AnyObjectSchema"
           }
         }
       },
@@ -1081,7 +1104,8 @@
         },
         "deprecated": {
           "$ref": "./master.json#/definitions/Deprecation",
-          "description": "deprecation information -- ie, when this aspect doesn't apply and why"
+          "description": "Represent the deprecation information if api is deprecated.",
+          "default": "undefined"
         },
         "origin": {
           "description": "where did this aspect come from (jsonpath or 'modelerfour:<soemthing>')",

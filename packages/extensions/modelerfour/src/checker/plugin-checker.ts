@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { serialize } from "@azure-tools/codegen";
-import { Host, startSession } from "@azure-tools/autorest-extension-base";
+import { Host, startSession } from "@autorest/extension-base";
 import { codeModelSchema, CodeModel } from "@autorest/codemodel";
 import { Checker } from "./checker";
 
@@ -36,6 +36,7 @@ export async function processRequest(host: Host) {
     }
   } catch (E) {
     if (debug) {
+      // eslint-disable-next-line no-console
       console.error(`${__filename} - FAILURE  ${JSON.stringify(E)} ${E.stack}`);
     }
     throw E;

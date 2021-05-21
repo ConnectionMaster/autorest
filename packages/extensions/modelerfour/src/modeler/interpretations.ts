@@ -1,4 +1,4 @@
-import { Session } from "@azure-tools/autorest-extension-base";
+import { Session } from "@autorest/extension-base";
 import * as OpenAPI from "@azure-tools/openapi";
 import { values, length, items, ToDictionary, Dictionary } from "@azure-tools/linq";
 import {
@@ -260,11 +260,14 @@ export class Interpretations {
     }
     return [];
   }
-  getDeprecation(schema: OpenAPI.Schema): Deprecation | undefined {
-    if (schema.deprecated) {
-      // todo
+
+  public getDeprecation(schema: OpenAPI.Deprecatable): Deprecation | undefined {
+    if (!schema.deprecated) {
+      return undefined;
     }
-    return undefined;
+
+    // We don't have any additional information at this time. Just returning an empty object saying this is deprecated.
+    return {};
   }
 
   constructor(private session: Session<OpenAPI.Model>) {}
@@ -306,10 +309,9 @@ export class Interpretations {
 
     // synthesize from tags.
     if (original.tags && length(original.tags) > 0) {
-      const newOperationId = length(original.tags) === 1 
-        ? `${original.tags[0]}`
-        : `${original.tags[0]}_${original.tags[1]}`;
-      
+      const newOperationId =
+        length(original.tags) === 1 ? `${original.tags[0]}` : `${original.tags[0]}_${original.tags[1]}`;
+
       this.session.warning(
         `Generating 'operationId' to '${newOperationId}' for '${httpMethod}' operation on path '${path}' `,
         ["Interpretations"],
@@ -358,11 +360,11 @@ export class Interpretations {
 
   /*
     /** creates server entries that are kept in the codeModel.protocol.http, and then referenced in each operation
-     * 
+     *
      * @note - this is where deduplication of server entries happens.
       * /
     getServers(operation: OpenAPI.HttpOperation): Array<HttpServer> {
-  
+
       return values(operation.servers).select(server => {
         const p = <HttpModel>this.codeModel.protocol.http;
         const f = p && p.servers.find(each => each.url === server.url);
@@ -373,13 +375,13 @@ export class Interpretations {
         if (server.variables && length(server.variables) > 0) {
           s.variables = items(server.variables).where(each => !!each.key).select(each => {
             const description = this.getDescription('MISSING-SERVER_VARIABLE-DESCRIPTION', each.value);
-  
+
             const variable = each.value;
-  
+
             const schema = variable.enum ?
               this.getEnumSchemaForVarible(each.key, variable) :
               this.codeModel.schemas.add(new StringSchema(`ServerVariable/${each.key}`, description));
-  
+
             const serverVariable = new ServerVariable(
               each.key,
               this.getDescription('MISSING-SERVER_VARIABLE-DESCRIPTION', variable),
@@ -391,10 +393,10 @@ export class Interpretations {
             return serverVariable;
           }).toArray();
         }
-  
+
         (<HttpModel>this.codeModel.protocol.http).servers.push(s);
         return s;
-  
+
       }).toArray();
     }
   */

@@ -36,10 +36,16 @@ export interface ModelerFourOptions {
 
   /**
    * In the case where a type only definition is to inherit another type remove it.
-   * @example ChildSchema: {allOf: [ParentSchema]}. 
+   * @example ChildSchema: {allOf: [ParentSchema]}.
    * In this case ChildSchema will be removed and all reference to it will be updated to point to ParentSchema
    */
   "remove-empty-child-schemas"?: boolean;
+
+  /**
+   * Disable anyobject type and default to type any instead.
+   * This is a temporary flag to smooth transition. It WILL be removed in a future version.
+   */
+  "treat-type-object-as-anything"?: boolean;
 }
 
 export interface ModelerFourNamingOptions {

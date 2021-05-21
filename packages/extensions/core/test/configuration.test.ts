@@ -1,6 +1,6 @@
-import * as assert from "assert";
+import { AutorestConfiguration } from "@autorest/configuration";
 import { MemoryFileSystem } from "@azure-tools/datastore";
-import * as AutoRest from "../lib/autorest-core";
+import * as AutoRest from "../src/lib/autorest-core";
 
 describe("Configuration", () => {
   it("Test config", async () => {
@@ -49,42 +49,42 @@ csharp:
     );
 
     const autorest = new AutoRest.AutoRest(f, MemoryFileSystem.DefaultVirtualRootUri + "readme.md");
-    let cfg = await autorest.view;
+    const context = await autorest.view;
+    const cfg = context.config;
 
     // output folder should be 'foo'
-    assert.equal(cfg["output-folder"], "foo");
+    expect(cfg["output-folder"]).toEqual("foo");
 
     // sample-other should get resolved to the value of sample-value
-    assert.equal(cfg["sample-other"], "one");
+    expect(cfg["sample-other" as keyof AutorestConfiguration]).toEqual("one");
 
     // verify that the items object that uses a macro works too
-    assert.equal(cfg["items"][3], "one/two");
+    expect(cfg["items" as keyof AutorestConfiguration][3]).toEqual("one/two");
 
-    for (const each of cfg.GetNestedConfiguration("csharp")) {
+    for (const each of context.getNestedConfiguration("csharp")) {
       // verify the output folder is relative
-      assert.equal(each.GetEntry("output-folder"), "foo/csharp");
+      expect(each.GetEntry("output-folder")).toEqual("foo/csharp");
 
       // verify that the items object that uses a macro works too
-      // assert.equal((<any>(each.Raw))['items'][3], "two/two");
+      // expect((<any>(each.Raw))['items'][3]).toEqual( "two/two");
 
       // now, this got resolved alot earlier.
       // dunno if we need it the other way or not.
-      assert.equal(each["items"][3], "one/two");
+      expect(each.config["items" as keyof AutorestConfiguration][3]).toEqual("one/two");
     }
 
     // override the output-folder from the cmdline
     autorest.AddConfiguration({ "output-folder": "OUTPUT" });
-    cfg = await autorest.view;
-    assert.equal(cfg["output-folder"], "OUTPUT");
+    const updatedContext = await autorest.view;
+    expect(updatedContext.config.raw["output-folder"]).toEqual("OUTPUT");
 
-    for (const each of cfg.GetNestedConfiguration("csharp")) {
-      assert.equal(each["output-folder"], "OUTPUT/csharp");
+    for (const each of updatedContext.getNestedConfiguration("csharp")) {
+      expect(each.config["output-folder"]).toEqual("OUTPUT/csharp");
     }
   });
 
   it("Test Guards", async () => {
     // test out subscribe
-
     const f = new MemoryFileSystem(
       new Map<string, string>([
         [
@@ -134,13 +134,13 @@ value:
 
     const autorest = new AutoRest.AutoRest(f, MemoryFileSystem.DefaultVirtualRootUri + "readme.md");
     autorest.AddConfiguration({ foo: true });
-    let cfg = await autorest.view;
+    let context = await autorest.view;
 
     // output folder should be 'foo'
-    assert.deepEqual(cfg["value"], ["foo", "foo_and_not_bar", "not_bar"]);
+    expect(context.config["value" as keyof AutorestConfiguration]).toEqual(["foo", "foo_and_not_bar", "not_bar"]);
 
     autorest.AddConfiguration({ bar: true });
-    cfg = await autorest.view;
-    assert.deepEqual(cfg["value"], ["foo", "foo_and_bar", "bar"]);
+    context = await autorest.view;
+    expect(context.config["value" as keyof AutorestConfiguration]).toEqual(["foo", "foo_and_bar", "bar"]);
   });
 });

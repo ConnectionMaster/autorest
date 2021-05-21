@@ -1,4 +1,3 @@
-import { Schema } from "inspector";
 import { OpenAPI2Definition } from "./definition";
 import { OpenAPI2HeaderDefinition } from "./header";
 
@@ -61,9 +60,8 @@ export interface OpenApi2PathParameter {
   description?: string;
   required?: boolean;
   format?: string;
-   enum?: string[];
+  enum?: string[];
 }
-
 
 export interface PrimitiveItems {
   type: "string" | "number" | "integer" | "boolean" | "array" | "file";

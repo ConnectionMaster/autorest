@@ -17,7 +17,7 @@ import {
   SealedChoiceSchema,
   PrimitiveSchema,
 } from "@autorest/codemodel";
-import { Session } from "@azure-tools/autorest-extension-base";
+import { Session } from "@autorest/extension-base";
 import { values, length, Dictionary, items } from "@azure-tools/linq";
 import { selectName, Style, Styler } from "@azure-tools/codegen";
 import { ModelerFourOptions } from "../modeler/modelerfour-options";
@@ -203,7 +203,10 @@ export class PreNamer {
 
     const objectSchemaNames = new Set<string>();
     for (const schema of values(this.codeModel.schemas.objects)) {
-      setName(schema, this.format.type, "", this.format.override, { existingNames, lenientModelDeduplication: this.options["lenient-model-deduplication"] });
+      setName(schema, this.format.type, "", this.format.override, {
+        existingNames,
+        lenientModelDeduplication: this.options["lenient-model-deduplication"],
+      });
 
       if (deduplicateSchemaNames) {
         deduplicateSchemaName(

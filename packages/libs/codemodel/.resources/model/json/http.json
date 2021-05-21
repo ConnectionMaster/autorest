@@ -1,6 +1,19 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "definitions": {
+    "SecurityScheme": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        }
+      },
+      "defaultProperties": [],
+      "additionalProperties": false,
+      "required": [
+        "type"
+      ]
+    },
     "AuthorizationCodeOAuthFlow": {
       "type": "object",
       "properties": {
@@ -204,25 +217,6 @@
         }
       ]
     },
-    "SecurityScheme": {
-      "anyOf": [
-        {
-          "$ref": "./http.json#/definitions/BearerHTTPSecurityScheme"
-        },
-        {
-          "$ref": "./http.json#/definitions/NonBearerHTTPSecurityScheme"
-        },
-        {
-          "$ref": "./http.json#/definitions/OAuth2SecurityScheme"
-        },
-        {
-          "$ref": "./http.json#/definitions/APIKeySecurityScheme"
-        },
-        {
-          "$ref": "./http.json#/definitions/OpenIdConnectSecurityScheme"
-        }
-      ]
-    },
     "APIKeySecurityScheme": {
       "type": "object",
       "properties": {
@@ -351,7 +345,7 @@
       "type": "object",
       "properties": {
         "path": {
-          "description": "A relative path to an individual endpoint. \n\nThe field name MUST begin with a slash. \nThe path is appended (no relative URL resolution) to the expanded URL from the Server Object's url field in order to construct the full URL. \nPath templating is allowed. \n\nWhen matching URLs, concrete (non-templated) paths would be matched before their templated counterparts.",
+          "description": "A relative path to an individual endpoint.\n\nThe field name MUST begin with a slash.\nThe path is appended (no relative URL resolution) to the expanded URL from the Server Object's url field in order to construct the full URL.\nPath templating is allowed.\n\nWhen matching URLs, concrete (non-templated) paths would be matched before their templated counterparts.",
           "type": "string"
         },
         "uri": {
@@ -436,7 +430,7 @@
       "type": "object",
       "properties": {
         "multipart": {
-          "description": "indicates that the HTTP Request should be a multipart request \n\nie, that it has multiple requests in a single request.",
+          "description": "indicates that the HTTP Request should be a multipart request\n\nie, that it has multiple requests in a single request.",
           "type": "boolean",
           "enum": [
             true
@@ -561,10 +555,10 @@
         },
         "knownMediaType": {
           "$ref": "./enums.json#/definitions/KnownMediaType",
-          "description": "canonical response type (ie, 'json')"
+          "description": "canonical response type (ie, 'json')."
         },
         "mediaTypes": {
-          "description": "the possible media types that this response MUST match one of",
+          "description": "The possible media types that this response MUST match one of.",
           "type": "array",
           "items": {
             "type": "string"
@@ -588,8 +582,6 @@
       "defaultProperties": [],
       "additionalProperties": false,
       "required": [
-        "knownMediaType",
-        "mediaTypes",
         "statusCodes"
       ],
       "allOf": [
@@ -613,8 +605,6 @@
       "additionalProperties": false,
       "required": [
         "binary",
-        "knownMediaType",
-        "mediaTypes",
         "statusCodes"
       ],
       "allOf": [
